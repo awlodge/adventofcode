@@ -7,7 +7,7 @@ public static class Day01
     public static int RunPart1()
     {
         ParseFile(InputPath, out var colA, out var colB);
-        return CalculateDistance(colA.ToList(), colB.ToList());
+        return CalculateDistance([.. colA], [.. colB]);
     }
 
     public static int RunPart2()
@@ -19,12 +19,12 @@ public static class Day01
     public static int CalculateDistance(string input)
     {
         Parse(input, out var colA, out var colB);
-        return CalculateDistance(colA.ToList(), colB.ToList());
+        return CalculateDistance([.. colA], [.. colB]);
     }
 
     public static int CalculateDistance(List<int> colA, List<int> colB)
     {
-        int distance(int a, int b) => a >= b ? a - b : b - a;
+        static int distance(int a, int b) => a >= b ? a - b : b - a;
         colA.Sort();
         colB.Sort();
         return colA
@@ -41,7 +41,7 @@ public static class Day01
 
     public static int CalculateSimilarityScore(IList<int> colA, IList<int> colB)
     {
-        Dictionary<int, int> colBCounter = new Dictionary<int, int>();
+        Dictionary<int, int> colBCounter = [];
         foreach (var x in colB)
         {
             var value = colBCounter.GetValueOrDefault(x);
@@ -65,15 +65,15 @@ public static class Day01
 
     private static void ParseInner(IEnumerable<string> input, out IList<int> colA, out IList<int> colB)
     {
-        colA = new List<int>();
-        colB = new List<int>();
+        colA = [];
+        colB = [];
 
         foreach (var line in input)
         {
             var cols = line.Split(new char[0], options: StringSplitOptions.RemoveEmptyEntries);
             if (cols.Length != 2)
             {
-                throw new ArgumentException(nameof(input), $"Row has insufficient columns");
+                throw new ArgumentException($"Row has insufficient columns", nameof(input));
             }
             colA.Add(Int32.Parse(cols[0]));
             colB.Add(Int32.Parse(cols[1]));
