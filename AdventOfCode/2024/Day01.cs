@@ -70,7 +70,7 @@ public static class Day01
 
         foreach (var line in input)
         {
-            var cols = line.Split(new char[0], options: StringSplitOptions.RemoveEmptyEntries);
+            var cols = line.Split(Array.Empty<char>(), options: StringSplitOptions.RemoveEmptyEntries);
             if (cols.Length != 2)
             {
                 throw new ArgumentException($"Row has insufficient columns", nameof(input));
