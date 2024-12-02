@@ -1,5 +1,6 @@
 ﻿namespace AdventOfCode._2024;
 
+using AdventOfCode.Helpers;
 using Report = IList<int>;
 
 public static class Day02
@@ -45,13 +46,12 @@ public static class Day02
         return true;
     }
 
-    public static IEnumerable<Report> Parse(string input) => ParseInner(input.Split('\n', options: StringSplitOptions.RemoveEmptyEntries));
+    public static IEnumerable<Report> Parse(string input) => ParseInner(input.SplitLines());
 
     public static IEnumerable<Report> ParseFile(string path) => ParseInner(File.ReadLines(path));
 
     private static IEnumerable<Report> ParseInner(IEnumerable<string> lines) => lines
         .Select(line => line
-            .Split(Array.Empty<char>(), options: StringSplitOptions.RemoveEmptyEntries)
-            .Select(x => Int32.Parse(x))
+            .ParseAsInts()
             .ToList());
 }

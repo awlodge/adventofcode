@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Helpers;
 
 internal static class RunnerHelpers
 {

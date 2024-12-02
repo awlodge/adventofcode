@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode._2024;
+﻿using AdventOfCode.Helpers;
+
+namespace AdventOfCode._2024;
 
 public static class Day01
 {
@@ -55,7 +57,7 @@ public static class Day01
 
     public static void Parse(string input, out IList<int> colA, out IList<int> colB)
     {
-        ParseInner(input.Split('\n', options: StringSplitOptions.RemoveEmptyEntries), out colA, out colB);
+        ParseInner(input.SplitLines(), out colA, out colB);
     }
 
     public static void ParseFile(string path, out IList<int> colA, out IList<int> colB)
@@ -70,13 +72,13 @@ public static class Day01
 
         foreach (var line in input)
         {
-            var cols = line.Split(Array.Empty<char>(), options: StringSplitOptions.RemoveEmptyEntries);
-            if (cols.Length != 2)
+            var cols = line.ParseAsInts().ToList();
+            if (cols.Count != 2)
             {
                 throw new ArgumentException($"Row has insufficient columns", nameof(input));
             }
-            colA.Add(Int32.Parse(cols[0]));
-            colB.Add(Int32.Parse(cols[1]));
+            colA.Add(cols[0]);
+            colB.Add(cols[1]);
         }
     }
 }
