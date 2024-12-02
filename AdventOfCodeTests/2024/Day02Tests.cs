@@ -21,7 +21,7 @@ public class Day02Tests
     [InlineData(new[] { 1, 3, 6, 7, 9 }, true)]
     public void TestIsSafe(int[] report, bool expectedResult)
     {
-        report.IsSafe().Should().Be(expectedResult);
+        report.ToList().IsSafe().Should().Be(expectedResult);
     }
 
     [Theory]
@@ -35,5 +35,32 @@ public class Day02Tests
     public void TestDay2Part1()
     {
         Day02.RunPart1().Should().Be(356);
+    }
+
+    [Theory]
+    [InlineData(new[] { 7, 6, 4, 2, 1 }, true)]
+    [InlineData(new[] { 1, 2, 7, 8, 9 }, false)]
+    [InlineData(new[] { 9, 7, 6, 2, 1 }, false)]
+    [InlineData(new[] { 1, 3, 2, 4, 5 }, true)]
+    [InlineData(new[] { 8, 6, 4, 4, 1 }, true)]
+    [InlineData(new[] { 1, 3, 6, 7, 9 }, true)]
+    [InlineData(new[] { 3, 2, 4, 5, 6 }, true)]
+    [InlineData(new[] { 1, 4, 2, 4, 6 }, true)]
+    public void TestIsSafeWithProblemDampener(int[] report, bool expectedResult)
+    {
+        report.ToList().IsSafeWithProblemDampener().Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData(TestInput, 4)]
+    public void TestSafeCountWithProblemDampener(string input, int expectedCount)
+    {
+        Day02.SafeCountWithProblemDampener(input).Should().Be(expectedCount);
+    }
+
+    [Fact]
+    public void TestDay2Part2()
+    {
+        Day02.RunPart2().Should().Be(413);
     }
 }

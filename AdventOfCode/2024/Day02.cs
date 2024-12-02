@@ -1,7 +1,7 @@
 ﻿namespace AdventOfCode._2024;
 
 using AdventOfCode.Helpers;
-using Report = IList<int>;
+using Report = List<int>;
 
 public static class Day02
 {
@@ -9,11 +9,17 @@ public static class Day02
 
     public static int RunPart1() => SafeCount(ParseFile(InputPath));
 
+    public static int RunPart2() => SafeCountWithProblemDampener(ParseFile(InputPath));
+
     public static int SafeCount(string input) => SafeCount(Parse(input));
 
     public static int SafeCount(IEnumerable<Report> reports) => reports.Count(r => r.IsSafe());
 
-    public static bool IsSafe(this Report report)
+    public static int SafeCountWithProblemDampener(string input) => SafeCountWithProblemDampener(Parse(input));
+
+    public static int SafeCountWithProblemDampener(IEnumerable<Report> reports) => reports.Count(r => r.IsSafeWithProblemDampener());
+
+    public static bool IsSafe(this Report report, bool enablePd = false)
     {
         if (report.Count <= 1)
         {
@@ -22,10 +28,11 @@ public static class Day02
 
         if (report[1] == report[0])
         {
-            return false;
+            return enablePd && report[1..].IsSafe(enablePd: false);
         }
 
-        var increasing = report[1] > report[0];
+        bool skipped = false;
+        bool increasing = report[1] > report[0];
         var i = 1;
         while (i < report.Count)
         {
@@ -37,7 +44,30 @@ public static class Day02
 
             if (diff < 1 || diff > 3)
             {
-                return false;
+                if (enablePd && !skipped)
+                {
+                    if (i <= 2)
+                    {
+                        // Handle the cases where removing the first or second entry can still work. Eurgh.
+                        if (report[1..].IsSafe(enablePd: false))
+                        {
+                            return true;
+                        }
+                        var copy = report[1..];
+                        copy[0] = report[0];
+                        if (copy.IsSafe(enablePd: false))
+                        {
+                            return true;
+                        }
+                    }
+                    skipped = true;
+                    report.RemoveAt(i);
+                    continue;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             i++;
@@ -45,6 +75,8 @@ public static class Day02
 
         return true;
     }
+
+    public static bool IsSafeWithProblemDampener(this Report report) => report.IsSafe(enablePd: true);
 
     public static IEnumerable<Report> Parse(string input) => ParseInner(input.SplitLines());
 
