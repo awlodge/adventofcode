@@ -1,7 +1,7 @@
 ﻿namespace AdventOfCode._2024;
 
 using AdventOfCode.Helpers;
-using Wordsearch = List<List<char>>;
+using Wordsearch = Helpers.Grid<char>;
 
 public static class Day04
 {
@@ -40,16 +40,16 @@ public static class Day04
             return 0;
         }
 
-        return Point.Directions.Count(p => wordsearch.CheckDirection(word, position, p));
+        return Directions.All.Count(p => wordsearch.CheckDirection(word, position, p));
     }
 
     private static bool CheckDirection(this Wordsearch wordsearch, string word, Point position, Point direction)
     {
         var wordArr = word.ToCharArray();
-        Point pos = new(position.X, position.Y);
+        var pos = position with { };
         for (int i = 1; i < wordArr.Length; i++)
         {
-            pos = pos.Add(direction);
+            pos += direction;
             if (!wordsearch.TryLookup(pos, out var x))
             {
                 return false;
@@ -76,20 +76,20 @@ public static class Day04
             return false;
         }
 
-        Point[][] directions = new[]
-        {
-            new[] { Point.NorthEast, Point.SouthWest },
-            new[] { Point.NorthWest, Point.SouthEast },
-        };
+        Point[][] directions =
+        [
+            [Directions.NorthEast, Directions.SouthWest],
+            [Directions.NorthWest, Directions.SouthEast],
+        ];
 
         foreach (var dir in directions)
         {
-            if (!wordsearch.TryLookup(position.Add(dir[0]), out var x))
+            if (!wordsearch.TryLookup(position + dir[0], out var x))
             {
                 return false;
             }
 
-            if (!wordsearch.TryLookup(position.Add(dir[1]), out var y))
+            if (!wordsearch.TryLookup(position + dir[1], out var y))
             {
                 return false;
             }
@@ -103,68 +103,13 @@ public static class Day04
         return true;
     }
 
-    private static int ColCount(this Wordsearch wordsearch) => wordsearch[0].Count;
-
-    private static char Lookup(this Wordsearch wordsearch, Point p) => wordsearch[p.X][p.Y];
-
-    private static bool TryLookup(this Wordsearch wordsearch, Point p, out char? x)
-    {
-        x = null;
-        if (p.X < 0 || p.X >= wordsearch.Count || p.Y < 0 || p.Y >= wordsearch.ColCount())
-        {
-            return false;
-        }
-
-        x = wordsearch.Lookup(p);
-        return true;
-    }
-
-    private static IEnumerable<Point> Search(this Wordsearch wordsearch)
-    {
-        for (int i = 0; i < wordsearch.Count; i++)
-        {
-            for (int j = 0; j < wordsearch[i].Count; j++)
-            {
-                yield return new(i, j);
-            }
-        }
-    }
-
     private static Wordsearch Parse(string input)
     {
-        return input.SplitLines().Select(l => l.ToCharArray().ToList()).ToList();
+        return new Wordsearch(input.SplitLines().Select(l => l.ToCharArray().ToList()).ToList());
     }
 
     private static Wordsearch ParseFile(string path)
     {
-        return File.ReadLines(path).Select(l => l.ToCharArray().ToList()).ToList();
+        return new Wordsearch(File.ReadLines(path).Select(l => l.ToCharArray().ToList()).ToList());
     }
-}
-
-internal record Point(int x, int y)
-{
-    public int X { get; init; } = x;
-    public int Y { get; init; } = y;
-
-    public Point Add(Point point) => new(X + point.X, Y + point.Y);
-
-    public static Point North = new(-1, 0);
-    public static Point NorthEast = new(-1, 1);
-    public static Point East = new(0, 1);
-    public static Point SouthEast = new(1, 1);
-    public static Point South = new(1, 0);
-    public static Point SouthWest = new(1, -1);
-    public static Point West = new(0, -1);
-    public static Point NorthWest = new(-1, -1);
-
-    public static Point[] Directions = {
-        North,
-        NorthEast,
-        East,
-        SouthEast,
-        South,
-        SouthWest,
-        West,
-        NorthWest,
-    };
 }
