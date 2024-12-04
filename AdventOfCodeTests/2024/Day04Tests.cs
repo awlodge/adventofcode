@@ -28,4 +28,17 @@ MXMXAXMASX";
     {
         Day04.RunPart1().Should().Be(2496);
     }
+
+    [Theory]
+    [InlineData(TestInput, 9)]
+    public void TestCountXmases(string input, int expectedCount)
+    {
+        Day04.CountXmases(input).Should().Be(expectedCount);
+    }
+
+    [Fact]
+    public void TestDay4Part2()
+    {
+        Day04.RunPart2().Should().Be(1967);
+    }
 }

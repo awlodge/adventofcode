@@ -8,3 +8,5 @@ RunnerHelpers.Execute(Day02.RunPart2, "Day 2 (part 2)");
 RunnerHelpers.Execute(Day03.RunPart1, "Day 3 (part 1)");
 RunnerHelpers.Execute(Day03.RunPart2, "Day 3 (part 2)");
 RunnerHelpers.Execute(Day04.RunPart1, "Day 4 (part 1)");
+RunnerHelpers.Execute(Day04.RunPart2, "Day 4 (part 2)");
+
