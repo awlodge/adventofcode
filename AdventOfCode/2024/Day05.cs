@@ -113,7 +113,7 @@ public static class Day05
 
     private static ParsedInput ParseInner(List<string> lines)
     {
-        Dictionary<int, HashSet<int>> rules = new();
+        Dictionary<int, HashSet<int>> rules = [];
         int i = 0;
         while (i < lines.Count && lines[i] != String.Empty)
         {
@@ -126,7 +126,7 @@ public static class Day05
         }
 
         i++;
-        List<List<int>> updates = new();
+        List<List<int>> updates = [];
         while (i < lines.Count)
         {
             updates.Add(lines[i].ParseAsInts(splitChars: [',']).ToList());

@@ -2,6 +2,16 @@
 
 internal class Grid<T>(List<List<T>> data)
 {
+    public static Grid<char> ParseCharGrid(string input)
+    {
+        return new Grid<char>(input.SplitLines().Select(l => l.ToCharArray().ToList()).ToList());
+    }
+
+    public static Grid<char> ParseCharGridFile(string path)
+    {
+        return new Grid<char>(File.ReadLines(path).Select(l => l.ToCharArray().ToList()).ToList());
+    }
+
     private readonly List<List<T>> _data = data;
 
     public int ColCount => _data[0].Count;
@@ -13,7 +23,7 @@ internal class Grid<T>(List<List<T>> data)
     public bool TryLookup(Point p, out T? x)
     {
         x = default;
-        if (p.X < 0 || p.X >= RowCount || p.Y < 0 || p.Y >= ColCount)
+        if (!Contains(p))
         {
             return false;
         }
@@ -21,6 +31,8 @@ internal class Grid<T>(List<List<T>> data)
         x = Lookup(p);
         return true;
     }
+
+    public bool Contains(Point p) => p.X >= 0 && p.X < RowCount && p.Y >= 0 && p.Y < ColCount;
 
     public IEnumerable<Point> Search()
     {

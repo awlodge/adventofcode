@@ -10,6 +10,6 @@ internal static class ParseHelpers
         .Select(l => l.TrimEnd('\r', '\n'));
 
     public static IEnumerable<int> ParseAsInts(this string input, char[]? splitChars = default) => input
-        .Split(splitChars ?? Array.Empty<char>(), options: StringSplitOptions.RemoveEmptyEntries)
+        .Split(splitChars ?? [], options: StringSplitOptions.RemoveEmptyEntries)
         .Select(x => Int32.Parse(x));
 }

@@ -103,13 +103,7 @@ public static class Day04
         return true;
     }
 
-    private static Wordsearch Parse(string input)
-    {
-        return new Wordsearch(input.SplitLines().Select(l => l.ToCharArray().ToList()).ToList());
-    }
+    private static Wordsearch Parse(string input) => Wordsearch.ParseCharGrid(input);
 
-    private static Wordsearch ParseFile(string path)
-    {
-        return new Wordsearch(File.ReadLines(path).Select(l => l.ToCharArray().ToList()).ToList());
-    }
+    private static Wordsearch ParseFile(string path) => Wordsearch.ParseCharGridFile(path);
 }
