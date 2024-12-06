@@ -71,4 +71,10 @@ public class Day05Tests
     {
         Day05.RunPart1().Should().Be(4766);
     }
+
+    [Fact]
+    public void TestDay5Part2()
+    {
+        Day05.RunPart2().Should().Be(6257);
+    }
 }

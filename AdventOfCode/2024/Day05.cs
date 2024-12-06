@@ -1,6 +1,7 @@
 ﻿using AdventOfCode.Helpers;
 
 namespace AdventOfCode._2024;
+using Rules = Dictionary<int, HashSet<int>>;
 
 public static class Day05
 {
@@ -12,6 +13,12 @@ public static class Day05
         return parsedInput.SumMiddleValidUpdate();
     }
 
+    public static int RunPart2()
+    {
+        var parsedInput = ParseFile(InputPath);
+        return parsedInput.SumMiddleReorderedUpdates();
+    }
+
     public static int SumMiddleValidUpdate(this ParsedInput parsedInput)
     {
         return parsedInput.Updates
@@ -19,7 +26,15 @@ public static class Day05
             .Sum(u => u.GetMiddle());
     }
 
-    public static bool CheckUpdate(this List<int> update, Dictionary<int, HashSet<int>> rules)
+    public static int SumMiddleReorderedUpdates(this ParsedInput parsedInput)
+    {
+        return parsedInput.Updates
+            .Where(u => !u.CheckUpdate(parsedInput.Rules))
+            .Select(u => u.ReorderUpdate(parsedInput.Rules))
+            .Sum(u => u.GetMiddle());
+    }
+
+    public static bool CheckUpdate(this List<int> update, Rules rules)
     {
         HashSet<int> previous = [];
         foreach (var page in update)
@@ -40,6 +55,54 @@ public static class Day05
     {
         var lines = input.SplitLines(removeEmpty: false).ToList();
         return ParseInner(lines);
+    }
+
+    public static List<int> ReorderUpdate(this List<int> update, Rules rules)
+    {
+        update.Sort((int a, int b) =>
+        {
+            if (a == b)
+            {
+                return 0;
+            }
+
+            if (rules.TryGetValue(a, out var rulesa) && rulesa.Contains(b))
+            {
+                return -1;
+            }
+
+            if (rules.TryGetValue(b, out var rulesb) && rulesb.Contains(a))
+            {
+                return 1;
+            }
+
+            // Pathological case
+            if (rules.TryGetValue(a, out var rulesa2))
+            {
+                foreach (var x in rulesa2)
+                {
+                    if (rules.TryGetValue(x, out var rulesx) && rulesx.Contains(b))
+                    {
+                        return -1;
+                    }
+                }
+            }
+
+            if (rules.TryGetValue(b, out var rulesb2))
+            {
+                foreach (var x in rulesb2)
+                {
+                    if (rules.TryGetValue(x, out var rulesx) && rulesx.Contains(a))
+                    {
+                        return 1;
+                    }
+                }
+            }
+
+            throw new InvalidOperationException($"Could not order {a} and {b}");
+        });
+
+        return update;
     }
 
     public static ParsedInput ParseFile(string path)
@@ -74,4 +137,4 @@ public static class Day05
     }
 }
 
-public record ParsedInput(Dictionary<int, HashSet<int>> Rules, List<List<int>> Updates);
+public record ParsedInput(Rules Rules, List<List<int>> Updates);
