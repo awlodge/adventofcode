@@ -12,46 +12,79 @@ public static class Day06
     public static int RunPart1()
     {
         var grid = Grid<char>.ParseCharGridFile(InputPath);
-        return grid.GuardWalk();
+        return grid.CountGuardWalk();
+    }
+
+    public static int RunPart2()
+    {
+        var grid = Grid<char>.ParseCharGridFile(InputPath);
+        return grid.CheckAddingObstacles();
     }
 
     public static int GuardWalk(string input)
     {
         var grid = Grid<char>.ParseCharGrid(input);
-        return grid.GuardWalk();
+        return grid.CountGuardWalk();
     }
 
-    private static int GuardWalk(this Grid<char> map) => map
-        .GuardWalk(map.FindGuard(), Directions.North);
+    public static int CheckAddingObstacles(string input)
+    {
+        var grid = Grid<char>.ParseCharGrid(input);
+        return grid.CheckAddingObstacles();
+    }
+
+    private static int CountGuardWalk(this Grid<char> map) => map
+        .CountGuardWalk(new PosDef(map.FindGuard(), Directions.North));
 
     private static Point FindGuard(this Grid<char> map) => map
         .Search()
         .First(p => map.Lookup(p) == Guard);
 
-    private static int GuardWalk(this Grid<char> map, Point guardPosition, Point startDirection)
+    private static int CountGuardWalk(this Grid<char> map, PosDef guard)
     {
-        var direction = startDirection;
-        var position = guardPosition;
-        HashSet<Point> visited = [guardPosition];
+        HashSet<Point> visited = [guard.Position];
+        foreach (var posdef in map.GuardWalk(guard))
+        {
+            visited.Add(posdef.Position);
+        }
+
+        return visited.Count;
+    }
+
+    private static int CheckAddingObstacles(this Grid<char> map) =>
+        map.CheckAddingObstacles(new PosDef(map.FindGuard(), Directions.North));
+
+    private static int CheckAddingObstacles(this Grid<char> map, PosDef guard)
+    {
+        return map
+            .GuardWalk(guard)
+            .Where(p => map.GuardWalk(guard, extras: [p.Position]).CheckLoop())
+            .Select(p => p.Position)
+            .Distinct()
+            .Count();
+    }
+
+    private static IEnumerable<PosDef> GuardWalk(this Grid<char> map, PosDef guardPosition, IList<Point>? extras = default)
+    {
+        var direction = guardPosition.Direction;
+        var position = guardPosition.Position;
 
         while (map.TryLookup(position + direction, out char x))
         {
-            if (x == Obstacle)
+            if (x == Obstacle || (extras?.Contains(position + direction) ?? false))
             {
                 direction = direction.Rotate();
             }
             position += direction;
             if (map.Contains(position))
             {
-                visited.Add(position);
+                yield return new PosDef(position, direction);
             }
             else
             {
                 break;
             }
         }
-
-        return visited.Count;
     }
 
     private static Point Rotate(this Point point) => point switch
@@ -62,4 +95,20 @@ public static class Day06
         Point(0, -1) => Directions.North,
         _ => throw new InvalidOperationException("Can only rotate cardinal directions")
     };
+
+    private static bool CheckLoop(this IEnumerable<PosDef> walk)
+    {
+        HashSet<PosDef> visited = [];
+        foreach (var posdef in walk)
+        {
+            if (visited.Contains(posdef))
+            {
+                return true;
+            }
+            visited.Add(posdef);
+        }
+        return false;
+    }
 }
+
+internal record PosDef(Point Position, Point Direction);

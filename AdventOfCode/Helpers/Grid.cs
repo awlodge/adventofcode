@@ -44,6 +44,25 @@ internal class Grid<T>(List<List<T>> data)
             }
         }
     }
+
+    public void Print(IDictionary<Point, T>? substitutes = default)
+    {
+        for (int i = 0; i < RowCount; i++)
+        {
+            var rowStr = String.Empty;
+            for (int j = 0; j < RowCount; j++)
+            {
+                var p = new Point(i, j);
+                T x = Lookup(p);
+                if (substitutes?.TryGetValue(p, out var y) ?? false)
+                {
+                    x = y;
+                }
+                rowStr += x;
+            }
+            Console.WriteLine(rowStr);
+        }
+    }
 }
 
 internal record Point(int X, int Y)

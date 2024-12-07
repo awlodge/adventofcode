@@ -27,4 +27,10 @@ public class Day06Tests
     {
         Day06.RunPart1().Should().Be(4580);
     }
+
+    [Fact]
+    public void TestCheckAddingObstacles()
+    {
+        Day06.CheckAddingObstacles(TestInput).Should().Be(6);
+    }
 }
