@@ -11,9 +11,19 @@ public static class Day07
         return ParseFile(InputPath).TotalCalibrationResult();
     }
 
+    public static long RunPart2()
+    {
+        return ParseFile(InputPath).TotalCalibrationResultWithConcat();
+    }
+
     public static long TotalCalibrationResult(string input)
     {
         return Parse(input).TotalCalibrationResult();
+    }
+
+    public static long TotalCalibrationResultWithConcat(string input)
+    {
+        return Parse(input).TotalCalibrationResultWithConcat();
     }
 
     private static long TotalCalibrationResult(this IEnumerable<Equation> equations) =>
@@ -21,10 +31,18 @@ public static class Day07
             .Where(eq => eq.IsValid())
             .Sum(eq => eq.Result);
 
+    private static long TotalCalibrationResultWithConcat(this IEnumerable<Equation> equations) =>
+        equations
+            .Where(eq => eq.IsValidWithConcat())
+            .Sum(eq => eq.Result);
+
     public static bool IsValid(this Equation equation) =>
         CheckEquation(equation.Result, equation.Inputs);
 
-    private static bool CheckEquation(long result, List<int> inputs)
+    public static bool IsValidWithConcat(this Equation equation) =>
+        CheckEquation(equation.Result, equation.Inputs, withConcat: true);
+
+    private static bool CheckEquation(long result, List<int> inputs, bool withConcat = false)
     {
         if (inputs.Count == 1)
         {
@@ -36,12 +54,17 @@ public static class Day07
             return false;
         }
 
-        if (CheckEquation(result - inputs[^1], inputs[..^1]))
+        if (CheckEquation(result - inputs[^1], inputs[..^1], withConcat))
         {
             return true;
         }
 
-        if (result % inputs[^1] == 0 && CheckEquation(result / inputs[^1], inputs[..^1]))
+        if (result % inputs[^1] == 0 && CheckEquation(result / inputs[^1], inputs[..^1], withConcat))
+        {
+            return true;
+        }
+
+        if (withConcat && result.EndsWith(inputs[^1]) && CheckEquation(result.DropSuffix(inputs[^1]), inputs[..^1], withConcat))
         {
             return true;
         }
@@ -63,6 +86,27 @@ public static class Day07
     {
         var parts = line.Split(':', options: StringSplitOptions.TrimEntries);
         return new Equation(Int64.Parse(parts[0]), parts[1].ParseAsInts().ToList());
+    }
+
+    private static bool EndsWith(this long x, int y)
+    {
+        return (x - y) % Math.Pow(10, y.Digits()) == 0;
+    }
+
+    private static int Digits(this int y)
+    {
+        int digits = 1;
+        while ((y /= 10) != 0)
+        {
+            digits++;
+        }
+
+        return digits;
+    }
+
+    private static long DropSuffix(this long x, int y)
+    {
+        return (long)((x - y) / Math.Pow(10, y.Digits()));
     }
 }
 

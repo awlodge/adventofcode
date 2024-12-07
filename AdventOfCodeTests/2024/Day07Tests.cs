@@ -25,6 +25,16 @@ public class Day07Tests
         }
     }
 
+    public static IEnumerable<object[]> GetTestInputForCheckEquationWithConcat()
+    {
+        HashSet<long> validResults = [190, 3267, 292, 156, 7290, 192];
+
+        foreach (var eq in Day07.Parse(TestInput))
+        {
+            yield return new object[] { eq, validResults.Contains(eq.Result) };
+        }
+    }
+
     [Theory]
     [MemberData(nameof(GetTestInputForCheckEquation))]
     public void TestCheckEquation(Equation equation, bool expectedResult)
@@ -42,5 +52,24 @@ public class Day07Tests
     public void TestDay7Part1()
     {
         Day07.RunPart1().Should().Be(12553187650171);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetTestInputForCheckEquationWithConcat))]
+    public void TestCheckEquationWithConcat(Equation equation, bool expectedResult)
+    {
+        equation.IsValidWithConcat().Should().Be(expectedResult);
+    }
+
+    [Fact]
+    public void TestTotalCalibrationResultWithConcat()
+    {
+        Day07.TotalCalibrationResultWithConcat(TestInput).Should().Be(11387);
+    }
+
+    [Fact]
+    public void TestDay7Part2()
+    {
+        Day07.RunPart2().Should().Be(96779702119491);
     }
 }
