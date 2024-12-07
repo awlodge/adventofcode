@@ -58,9 +58,9 @@ public static class Day06
     {
         return map
             .GuardWalk(guard)
-            .Where(p => map.GuardWalk(guard, extras: [p.Position]).CheckLoop())
             .Select(p => p.Position)
             .Distinct()
+            .Where(p => map.GuardWalk(guard, extras: [p]).CheckLoop())
             .Count();
     }
 

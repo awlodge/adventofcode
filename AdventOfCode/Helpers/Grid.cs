@@ -79,16 +79,16 @@ internal record Point(int X, int Y)
 
 internal static class Directions
 {
-    public static Point North = new(-1, 0);
-    public static Point NorthEast = new(-1, 1);
-    public static Point East = new(0, 1);
-    public static Point SouthEast = new(1, 1);
-    public static Point South = new(1, 0);
-    public static Point SouthWest = new(1, -1);
-    public static Point West = new(0, -1);
-    public static Point NorthWest = new(-1, -1);
+    public static readonly Point North = new(-1, 0);
+    public static readonly Point NorthEast = new(-1, 1);
+    public static readonly Point East = new(0, 1);
+    public static readonly Point SouthEast = new(1, 1);
+    public static readonly Point South = new(1, 0);
+    public static readonly Point SouthWest = new(1, -1);
+    public static readonly Point West = new(0, -1);
+    public static readonly Point NorthWest = new(-1, -1);
 
-    public static Point[] All = [
+    public static readonly Point[] All = [
         North,
         NorthEast,
         East,
