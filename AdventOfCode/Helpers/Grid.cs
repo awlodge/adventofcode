@@ -65,6 +65,10 @@ internal record Point(int X, int Y)
 
     public static Point operator -(Point a, Point b)
         => a + (-b);
+
+    public static Point operator *(Point a, int n) => new(n * a.X, n * a.Y);
+
+    public static Point operator *(int n, Point a) => new(n * a.X, n * a.Y);
 }
 
 internal static class Directions
