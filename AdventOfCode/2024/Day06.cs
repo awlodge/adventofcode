@@ -42,13 +42,11 @@ public static class Day06
 
     private static int CountGuardWalk(this Grid<char> map, PosDef guard)
     {
-        HashSet<Point> visited = [guard.Position];
-        foreach (var posdef in map.GuardWalk(guard))
-        {
-            visited.Add(posdef.Position);
-        }
-
-        return visited.Count;
+        return map
+            .GuardWalk(guard)
+            .Select(p => p.Position)
+            .Distinct()
+            .Count();
     }
 
     private static int CheckAddingObstacles(this Grid<char> map) =>
@@ -68,6 +66,8 @@ public static class Day06
     {
         var direction = guardPosition.Direction;
         var position = guardPosition.Position;
+
+        yield return guardPosition;
 
         while (map.TryLookup(position + direction, out char x))
         {
