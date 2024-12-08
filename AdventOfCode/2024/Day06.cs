@@ -11,25 +11,25 @@ public static class Day06
 
     public static int RunPart1()
     {
-        var grid = Grid<char>.ParseCharGridFile(InputPath);
+        var grid = ParseHelpers.ParseCharGridFile(InputPath);
         return grid.CountGuardWalk();
     }
 
     public static int RunPart2()
     {
-        var grid = Grid<char>.ParseCharGridFile(InputPath);
+        var grid = ParseHelpers.ParseCharGridFile(InputPath);
         return grid.CheckAddingObstacles();
     }
 
     public static int GuardWalk(string input)
     {
-        var grid = Grid<char>.ParseCharGrid(input);
+        var grid = ParseHelpers.ParseCharGrid(input);
         return grid.CountGuardWalk();
     }
 
     public static int CheckAddingObstacles(string input)
     {
-        var grid = Grid<char>.ParseCharGrid(input);
+        var grid = ParseHelpers.ParseCharGrid(input);
         return grid.CheckAddingObstacles();
     }
 

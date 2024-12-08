@@ -2,16 +2,6 @@
 
 internal class Grid<T>(List<List<T>> data)
 {
-    public static Grid<char> ParseCharGrid(string input)
-    {
-        return new Grid<char>(input.SplitLines().Select(l => l.ToCharArray().ToList()).ToList());
-    }
-
-    public static Grid<char> ParseCharGridFile(string path)
-    {
-        return new Grid<char>(File.ReadLines(path).Select(l => l.ToCharArray().ToList()).ToList());
-    }
-
     private readonly List<List<T>> _data = data;
 
     public int ColCount => _data[0].Count;
