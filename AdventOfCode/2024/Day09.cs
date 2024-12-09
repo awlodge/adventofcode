@@ -11,6 +11,11 @@ public static class Day09
         return File.ReadAllText(InputPath).GetMemoryMap().Collapse().Checksum();
     }
 
+    public static long RunPart2()
+    {
+        return File.ReadAllText(InputPath).GetMemoryMap().Defrag().Checksum();
+    }
+
     public static long Checksum(this List<int> memory)
     {
         return memory.Each<int, long>((x, i) => x == -1 ? 0 : x * i).Sum();
@@ -36,6 +41,10 @@ public static class Day09
         while (memory[ix] != -1)
         {
             ix++;
+            if (ix >= memory.Count)
+            {
+                return -1;
+            }
         }
 
         return ix;
@@ -46,6 +55,76 @@ public static class Day09
         while (memory[ix] == -1)
         {
             ix--;
+        }
+
+        return ix;
+    }
+
+    public static List<int> Defrag(this List<int> memory)
+    {
+        var fileLen = 0;
+        var endIx = memory.GetPrevFile(memory.Count - 1, out fileLen);
+        while (endIx > 0)
+        {
+            foreach (var block in memory.GetAllEmptyBlocks(endIx))
+            {
+                var emptyIx = block[0];
+                var emptyBlockLen = block[1];
+
+                if (fileLen <= emptyBlockLen)
+                {
+                    for (int j = 0; j < fileLen; j++)
+                    {
+                        memory[emptyIx + j] = memory[endIx - j];
+                        memory[endIx - j] = -1;
+                    }
+
+                    break;
+                }
+            }
+            endIx = memory.GetPrevFile(endIx - fileLen, out fileLen);
+        }
+
+        return memory;
+    }
+
+    private static int GetNextEmptyBlock(this List<int> memory, int ix, out int len)
+    {
+        ix = memory.GetNextEmpty(ix);
+        len = 0;
+        if (ix != -1)
+        {
+            while ((ix + len) < memory.Count && memory[ix + len] == -1)
+            {
+                len++;
+            }
+        }
+
+        return ix;
+    }
+
+    private static IEnumerable<int[]> GetAllEmptyBlocks(this List<int> memory, int end)
+    {
+        int ix = 0;
+        while (ix < end)
+        {
+            ix = memory.GetNextEmptyBlock(ix, out var len);
+            if (ix == -1 || ix >= end)
+            {
+                break;
+            }
+            yield return [ix, len];
+            ix += len;
+        }
+    }
+
+    private static int GetPrevFile(this List<int> memory, int ix, out int len)
+    {
+        ix = memory.GetPrevFull(ix);
+        len = 0;
+        while ((ix - len) > 0 && memory[ix - len] == memory[ix])
+        {
+            len++;
         }
 
         return ix;

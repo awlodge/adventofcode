@@ -36,4 +36,20 @@ public class Day09Tests
     {
         Day09.RunPart1().Should().Be(6385338159127);
     }
+
+    [Theory]
+    [InlineData("12345", "0..111....22222")]
+    [InlineData(TestInput, "00992111777.44.333....5555.6666.....8888..")]
+    public void TestDefrag(string input, string expectedResult)
+    {
+        input.GetMemoryMap().Defrag().MemoryMapAsString().Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("12345", 132)]
+    [InlineData(TestInput, 2858)]
+    public void TestDefragChecksum(string input, long expectedResult)
+    {
+        input.GetMemoryMap().Defrag().Checksum().Should().Be(expectedResult);
+    }
 }
