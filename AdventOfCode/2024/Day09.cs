@@ -62,16 +62,17 @@ public static class Day09
 
     public static List<int> Defrag(this List<int> memory)
     {
-        var fileLen = 0;
-        var endIx = memory.GetPrevFile(memory.Count - 1, out fileLen);
+        var emptyBlocks = memory.GetAllEmptyBlocks();
+        var endIx = memory.GetPrevFile(memory.Count - 1, out var fileLen);
         while (endIx > 0)
         {
-            foreach (var block in memory.GetAllEmptyBlocks(endIx))
+            for (int blockIx = 0; blockIx < emptyBlocks.Count; blockIx++)
             {
+                var block = emptyBlocks[blockIx];
                 var emptyIx = block[0];
                 var emptyBlockLen = block[1];
 
-                if (fileLen <= emptyBlockLen)
+                if (emptyIx < endIx && fileLen <= emptyBlockLen)
                 {
                     for (int j = 0; j < fileLen; j++)
                     {
@@ -79,6 +80,7 @@ public static class Day09
                         memory[endIx - j] = -1;
                     }
 
+                    emptyBlocks[blockIx] = [emptyIx + fileLen, emptyBlockLen - fileLen];
                     break;
                 }
             }
@@ -103,19 +105,22 @@ public static class Day09
         return ix;
     }
 
-    private static IEnumerable<int[]> GetAllEmptyBlocks(this List<int> memory, int end)
+    private static List<int[]> GetAllEmptyBlocks(this List<int> memory)
     {
+        List<int[]> result = [];
         int ix = 0;
-        while (ix < end)
+        while (ix < memory.Count)
         {
             ix = memory.GetNextEmptyBlock(ix, out var len);
-            if (ix == -1 || ix >= end)
+            if (ix == -1)
             {
                 break;
             }
-            yield return [ix, len];
+            result.Add([ix, len]);
             ix += len;
         }
+
+        return result;
     }
 
     private static int GetPrevFile(this List<int> memory, int ix, out int len)

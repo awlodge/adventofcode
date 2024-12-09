@@ -52,4 +52,10 @@ public class Day09Tests
     {
         input.GetMemoryMap().Defrag().Checksum().Should().Be(expectedResult);
     }
+
+    [Fact]
+    public void TestDay9Part2()
+    {
+        Day09.RunPart2().Should().Be(6415163624282);
+    }
 }
