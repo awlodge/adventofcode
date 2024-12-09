@@ -6,11 +6,13 @@ public static class Day09
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day09.txt");
 
+    [AdventOfCode2024(9, 1)]
     public static long RunPart1()
     {
         return File.ReadAllText(InputPath).GetMemoryMap().Collapse().Checksum();
     }
 
+    [AdventOfCode2024(9, 2)]
     public static long RunPart2()
     {
         return File.ReadAllText(InputPath).GetMemoryMap().Defrag().Checksum();

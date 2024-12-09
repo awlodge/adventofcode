@@ -23,12 +23,6 @@ public class Day06Tests
     }
 
     [Fact]
-    public void TestDay6Part1()
-    {
-        Day06.RunPart1().Should().Be(4580);
-    }
-
-    [Fact]
     public void TestCheckAddingObstacles()
     {
         Day06.CheckAddingObstacles(TestInput).Should().Be(6);

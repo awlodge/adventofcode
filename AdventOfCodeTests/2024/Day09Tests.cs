@@ -31,12 +31,6 @@ public class Day09Tests
         input.GetMemoryMap().Collapse().Checksum().Should().Be(expectedResult);
     }
 
-    [Fact]
-    public void TestDay9Part1()
-    {
-        Day09.RunPart1().Should().Be(6385338159127);
-    }
-
     [Theory]
     [InlineData("12345", "0..111....22222")]
     [InlineData(TestInput, "00992111777.44.333....5555.6666.....8888..")]
@@ -51,11 +45,5 @@ public class Day09Tests
     public void TestDefragChecksum(string input, long expectedResult)
     {
         input.GetMemoryMap().Defrag().Checksum().Should().Be(expectedResult);
-    }
-
-    [Fact]
-    public void TestDay9Part2()
-    {
-        Day09.RunPart2().Should().Be(6415163624282);
     }
 }

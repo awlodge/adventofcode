@@ -6,13 +6,16 @@ public static class Day01
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day01.txt");
 
-    public static int RunPart1()
+    [AdventOfCode2024(1, 1)]
+    public static long RunPart1()
     {
         ParseFile(InputPath, out var colA, out var colB);
         return CalculateDistance([.. colA], [.. colB]);
     }
 
-    public static int RunPart2()
+    [AdventOfCode2024(1, 2)]
+
+    public static long RunPart2()
     {
         ParseFile(InputPath, out var colA, out var colB);
         return CalculateSimilarityScore(colA, colB);

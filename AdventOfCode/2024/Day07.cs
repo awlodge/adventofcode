@@ -6,11 +6,13 @@ public static class Day07
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day07.txt");
 
+    [AdventOfCode2024(7, 1)]
     public static long RunPart1()
     {
         return ParseFile(InputPath).TotalCalibrationResult();
     }
 
+    [AdventOfCode2024(7, 2)]
     public static long RunPart2()
     {
         return ParseFile(InputPath).TotalCalibrationResultWithConcat();

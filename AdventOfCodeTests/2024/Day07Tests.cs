@@ -48,12 +48,6 @@ public class Day07Tests
         Day07.TotalCalibrationResult(TestInput).Should().Be(3749);
     }
 
-    [Fact]
-    public void TestDay7Part1()
-    {
-        Day07.RunPart1().Should().Be(12553187650171);
-    }
-
     [Theory]
     [MemberData(nameof(GetTestInputForCheckEquationWithConcat))]
     public void TestCheckEquationWithConcat(Equation equation, bool expectedResult)
@@ -65,11 +59,5 @@ public class Day07Tests
     public void TestTotalCalibrationResultWithConcat()
     {
         Day07.TotalCalibrationResultWithConcat(TestInput).Should().Be(11387);
-    }
-
-    [Fact]
-    public void TestDay7Part2()
-    {
-        Day07.RunPart2().Should().Be(96779702119491);
     }
 }

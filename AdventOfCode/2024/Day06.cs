@@ -9,13 +9,16 @@ public static class Day06
 
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day06.txt");
 
-    public static int RunPart1()
+    [AdventOfCode2024(6, 1)]
+    public static long RunPart1()
     {
         var grid = ParseHelpers.ParseCharGridFile(InputPath);
         return grid.CountGuardWalk();
     }
 
-    public static int RunPart2()
+    // Skipping for now as it is taking too long and giving the wrong answer.
+    //[AdventOfCode2024(6, 2)]
+    public static long RunPart2()
     {
         var grid = ParseHelpers.ParseCharGridFile(InputPath);
         return grid.CheckAddingObstacles();

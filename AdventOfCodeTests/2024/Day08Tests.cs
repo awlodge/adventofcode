@@ -25,20 +25,8 @@ public class Day08Tests
     }
 
     [Fact]
-    public void TestDay8Part1()
-    {
-        Day08.RunPart1().Should().Be(344);
-    }
-
-    [Fact]
     public void TestCountAntiNodesWithRH()
     {
         Day08.CountAntiNodesWithRH(TestInput).Should().Be(34);
-    }
-
-    [Fact]
-    public void TestDay8Part2()
-    {
-        Day08.RunPart2().Should().Be(1182);
     }
 }

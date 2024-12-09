@@ -31,12 +31,6 @@ public class Day02Tests
         Day02.SafeCount(input).Should().Be(expectedCount);
     }
 
-    [Fact]
-    public void TestDay2Part1()
-    {
-        Day02.RunPart1().Should().Be(356);
-    }
-
     [Theory]
     [InlineData(new[] { 7, 6, 4, 2, 1 }, true)]
     [InlineData(new[] { 1, 2, 7, 8, 9 }, false)]
@@ -56,11 +50,5 @@ public class Day02Tests
     public void TestSafeCountWithProblemDampener(string input, int expectedCount)
     {
         Day02.SafeCountWithProblemDampener(input).Should().Be(expectedCount);
-    }
-
-    [Fact]
-    public void TestDay2Part2()
-    {
-        Day02.RunPart2().Should().Be(413);
     }
 }

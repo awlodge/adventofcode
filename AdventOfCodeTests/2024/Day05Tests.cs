@@ -65,16 +65,4 @@ public class Day05Tests
         var parsedInput = Day05.Parse(TestInput);
         parsedInput.SumMiddleValidUpdate().Should().Be(143);
     }
-
-    [Fact]
-    public void TestDay5Part1()
-    {
-        Day05.RunPart1().Should().Be(4766);
-    }
-
-    [Fact]
-    public void TestDay5Part2()
-    {
-        Day05.RunPart2().Should().Be(6257);
-    }
 }

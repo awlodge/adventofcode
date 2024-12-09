@@ -6,12 +6,14 @@ using Map = Grid<char>;
 public static class Day08
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day08.txt");
-    private static bool Debug = false;
+    private static readonly bool Debug = false;
 
-    public static int RunPart1() =>
+    [AdventOfCode2024(8, 1)]
+    public static long RunPart1() =>
         ParseHelpers.ParseCharGridFile(InputPath).CountAntiNodes();
 
-    public static int RunPart2() =>
+    [AdventOfCode2024(8, 2)]
+    public static long RunPart2() =>
         ParseHelpers.ParseCharGridFile(InputPath).CountAntiNodes(withRH: true);
 
     public static int CountAntiNodes(string input) =>

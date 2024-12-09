@@ -8,12 +8,14 @@ public static class Day04
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day04.txt");
     private const string InputWord = "XMAS";
 
-    public static int RunPart1()
+    [AdventOfCode2024(4, 1)]
+    public static long RunPart1()
     {
         return ParseFile(InputPath).FindWords(InputWord);
     }
 
-    public static int RunPart2()
+    [AdventOfCode2024(4, 2)]
+    public static long RunPart2()
     {
         return ParseFile(InputPath).CountXmases();
     }

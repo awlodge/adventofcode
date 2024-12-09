@@ -7,9 +7,11 @@ public static class Day02
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day02.txt");
 
-    public static int RunPart1() => SafeCount(ParseFile(InputPath));
+    [AdventOfCode2024(2, 1)]
+    public static long RunPart1() => SafeCount(ParseFile(InputPath));
 
-    public static int RunPart2() => SafeCountWithProblemDampener(ParseFile(InputPath));
+    [AdventOfCode2024(2, 2)]
+    public static long RunPart2() => SafeCountWithProblemDampener(ParseFile(InputPath));
 
     public static int SafeCount(string input) => SafeCount(Parse(input));
 

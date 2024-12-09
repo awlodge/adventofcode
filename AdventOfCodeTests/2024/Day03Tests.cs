@@ -15,22 +15,10 @@ public class Day03Tests
         Day03.ExtractUncorrupted(input).Should().Be(expectedResult);
     }
 
-    [Fact]
-    public void TestDay3Part1()
-    {
-        Day03.RunPart1().Should().Be(178794710);
-    }
-
     [Theory]
     [InlineData(TestInput2, 48)]
     public void TextExtractUncorruptedWithConditionals(string input, int expectedResult)
     {
         Day03.ExtractUncorruptedWithConditionals(input).Should().Be(expectedResult);
-    }
-
-    [Fact]
-    public void TestDay3Part2()
-    {
-        Day03.RunPart2().Should().Be(76729637);
     }
 }

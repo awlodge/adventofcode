@@ -7,13 +7,15 @@ public static class Day05
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day05.txt");
 
-    public static int RunPart1()
+    [AdventOfCode2024(5, 1)]
+    public static long RunPart1()
     {
         var parsedInput = ParseFile(InputPath);
         return parsedInput.SumMiddleValidUpdate();
     }
 
-    public static int RunPart2()
+    [AdventOfCode2024(5, 2)]
+    public static long RunPart2()
     {
         var parsedInput = ParseFile(InputPath);
         return parsedInput.SumMiddleReorderedUpdates();
