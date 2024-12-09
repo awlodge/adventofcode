@@ -13,4 +13,13 @@ public static class CollectionHelpers
             }
         }
     }
+
+    public static IEnumerable<TResult> Each<T, TResult>(this IEnumerable<T> ie, Func<T, int, TResult> action)
+    {
+        var i = 0;
+        foreach (var e in ie)
+        {
+            yield return action(e, i++);
+        }
+    }
 }
