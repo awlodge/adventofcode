@@ -35,6 +35,11 @@ internal class Grid<T>(List<List<T>> data)
         }
     }
 
+    public IEnumerable<Point> Search(Func<T, bool> predicate)
+    {
+        return Search().Where(p => predicate(Lookup(p)));
+    }
+
     public void Print(IDictionary<Point, T>? substitutes = default)
     {
         for (int i = 0; i < RowCount; i++)
@@ -91,5 +96,12 @@ internal static class Directions
         SouthWest,
         West,
         NorthWest,
+    ];
+
+    public static readonly Point[] Cardinal = [
+        North,
+        East,
+        South,
+        West,
     ];
 }

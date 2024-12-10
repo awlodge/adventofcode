@@ -22,4 +22,14 @@ internal static class ParseHelpers
     {
         return new Grid<char>(File.ReadLines(path).Select(l => l.ToCharArray().ToList()).ToList());
     }
+
+    public static Grid<int> ParseIntGrid(string input)
+    {
+        return new Grid<int>(input.SplitLines().Select(l => l.ToCharArray().Select(x => (int)Char.GetNumericValue(x)).ToList()).ToList());
+    }
+
+    public static Grid<int> ParseIntGridFile(string path)
+    {
+        return new Grid<int>(File.ReadLines(path).Select(l => l.ToCharArray().Select(x => (int)Char.GetNumericValue(x)).ToList()).ToList());
+    }
 }
