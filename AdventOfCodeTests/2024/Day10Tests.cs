@@ -26,4 +26,12 @@ public class Day10Tests
     {
         Day10.GetTotalScore(input).Should().Be(expectedResult);
     }
+
+    [Theory]
+    [InlineData(TestInput, 81)]
+    [InlineData(TestInput2, 16)]
+    public void TestGetTotalRating(string input, int expectedResult)
+    {
+        Day10.GetTotalRating(input).Should().Be(expectedResult);
+    }
 }

@@ -13,16 +13,31 @@ public static class Day10
         return ParseHelpers.ParseIntGridFile(InputPath).GetTotalScore();
     }
 
+    [AdventOfCode2024(10, 2)]
+    public static long RunPart2()
+    {
+        return ParseHelpers.ParseIntGridFile(InputPath).GetTotalRating();
+    }
+
     public static int GetTotalScore(string input) =>
         ParseHelpers.ParseIntGrid(input).GetTotalScore();
 
+    public static int GetTotalRating(string input) =>
+        ParseHelpers.ParseIntGrid(input).GetTotalRating();
+
     private static int GetTotalScore(this Map map) =>
         map.FindTrailheads().Sum(p => map.GetTrailheadScore(p));
+
+    private static int GetTotalRating(this Map map) =>
+        map.FindTrailheads().Sum(p => map.GetTrailheadRating(p));
 
     private static IEnumerable<Point> FindTrailheads(this Map map) =>
         map.Search(x => x == 0);
 
     private static int GetTrailheadScore(this Map map, Point start) =>
+        map.FindTrails(start).Distinct().Count();
+
+    private static int GetTrailheadRating(this Map map, Point start) =>
         map.FindTrails(start).Count();
 
     private static IEnumerable<Point> FindTrails(this Map map, Point start)
@@ -42,7 +57,6 @@ public static class Day10
                 }
 
                 return [];
-            })
-            .Distinct();
+            });
     }
 }
