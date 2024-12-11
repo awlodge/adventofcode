@@ -13,6 +13,10 @@ internal static class ParseHelpers
         .Split(splitChars ?? [], options: StringSplitOptions.RemoveEmptyEntries)
         .Select(x => Int32.Parse(x));
 
+    public static IEnumerable<long> ParseAsLongs(this string input, char[]? splitChars = default) => input
+        .Split(splitChars ?? [], options: StringSplitOptions.RemoveEmptyEntries)
+        .Select(x => Int64.Parse(x));
+
     public static Grid<char> ParseCharGrid(string input)
     {
         return new Grid<char>(input.SplitLines().Select(l => l.ToCharArray().ToList()).ToList());

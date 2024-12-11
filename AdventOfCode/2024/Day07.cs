@@ -92,23 +92,7 @@ public static class Day07
 
     private static bool EndsWith(this long x, int y)
     {
-        return (x - y) % Math.Pow(10, y.Digits()) == 0;
-    }
-
-    private static int Digits(this int y)
-    {
-        int digits = 1;
-        while ((y /= 10) != 0)
-        {
-            digits++;
-        }
-
-        return digits;
-    }
-
-    private static long DropSuffix(this long x, int y)
-    {
-        return (long)((x - y) / Math.Pow(10, y.Digits()));
+        return (x - y) % Math.Pow(10, ((long)y).Digits()) == 0;
     }
 }
 
