@@ -5,26 +5,51 @@ namespace AdventOfCode._2024;
 public static class Day11
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day11.txt");
+    private static readonly Dictionary<long, Dictionary<int, long>> CountCache = [];
 
     [AdventOfCode2024(11, 1)]
-    public static long RunDay11()
+    public static long RunPart1()
     {
         return CountStones(File.ReadAllText(InputPath), 25);
     }
 
-    public static int CountStones(string input, int changeCount)
+    [AdventOfCode2024(11, 2)]
+    public static long RunPart2()
     {
-        return input.ParseAsLongs().RepeatChangeStones(changeCount).Count();
+        return CountStones(File.ReadAllText(InputPath), 75);
     }
 
-    public static IEnumerable<long> RepeatChangeStones(this IEnumerable<long> stones, int count)
+    public static long CountStones(string input, int changeCount)
     {
-        for (int i = 0; i < count; i++)
+        return input.ParseAsLongs().Sum(s => s.CountStones(changeCount));
+    }
+
+    private static long CountStones(this long stone, int changeCount)
+    {
+        if (changeCount == 0)
         {
-            stones = stones.ChangeStones();
+            return 1;
         }
 
-        return stones;
+        if (CountCache.ContainsKey(stone) && CountCache[stone].ContainsKey(changeCount))
+        {
+            return CountCache[stone][changeCount];
+        }
+
+        var result = stone
+            .ChangeStone()
+            .Sum(s => s.CountStones(changeCount - 1));
+        CacheCountResult(stone, changeCount, result);
+        return result;
+    }
+
+    private static void CacheCountResult(long stone, int changeCount, long result)
+    {
+        if (!CountCache.ContainsKey(stone))
+        {
+            CountCache[stone] = [];
+        }
+        CountCache[stone][changeCount] = result;
     }
 
     public static IEnumerable<long> ChangeStones(this IEnumerable<long> stones)
