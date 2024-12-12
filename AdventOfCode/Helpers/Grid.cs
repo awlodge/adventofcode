@@ -40,6 +40,16 @@ internal class Grid<T>(List<List<T>> data)
         return Search().Where(p => predicate(Lookup(p)));
     }
 
+    public IEnumerable<Point> Walk(Point p, Point direction)
+    {
+        var q = p + direction;
+        while (Contains(q))
+        {
+            yield return q;
+            q += direction;
+        }
+    }
+
     public void Print(IDictionary<Point, T>? substitutes = default)
     {
         for (int i = 0; i < RowCount; i++)
