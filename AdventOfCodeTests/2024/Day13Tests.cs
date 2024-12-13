@@ -38,20 +38,38 @@ Button B: X+27, Y+71
 Prize: X=18641, Y=10279";
 
     [Theory]
-    [InlineData(TestMachine1, true, 280)]
+    [InlineData(TestMachine1, true, 280L)]
     [InlineData(TestMachine2, false, null)]
-    [InlineData(TestMachine3, true, 200)]
+    [InlineData(TestMachine3, true, 200L)]
     [InlineData(TestMachine4, false, null)]
-    public void TestIsWinnable(string input, bool expectedResult, int? expectedMinCost)
+    public void TestIsWinnable(string input, bool expectedResult, long? expectedMinCost)
     {
         Day13.IsWinnable(input, out var minCost).Should().Be(expectedResult);
         minCost.Should().Be(expectedMinCost);
     }
 
     [Theory]
-    [InlineData(TestInput, 480)]
-    public void TestGetTotalTokens(string input, int expectedResult)
+    [InlineData(TestInput, 480L)]
+    public void TestGetTotalTokens(string input, long expectedResult)
     {
         Day13.GetTotalTokens(input).Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData(TestMachine1, false, null)]
+    [InlineData(TestMachine2, true, 459236326669L)]
+    [InlineData(TestMachine3, false, null)]
+    [InlineData(TestMachine4, true, 416082282239L)]
+    public void TestIsWinnableWithFixedInput(string input, bool expectedResult, long? expectedMinCost)
+    {
+        Day13.IsWinnableWithFixedInput(input, out var minCost).Should().Be(expectedResult);
+        minCost.Should().Be(expectedMinCost);
+    }
+
+    [Theory]
+    [InlineData(TestInput, 875318608908L)]
+    public void TestGetTotalTokensWithFixedInput(string input, long expectedResult)
+    {
+        Day13.GetTotalTokensWithFixedInput(input).Should().Be(expectedResult);
     }
 }

@@ -19,41 +19,74 @@ public static partial class Day13
         return ParseMany(File.ReadLines(InputPath)).GetTotalTokens();
     }
 
-    public static int GetTotalTokens(string input)
+    [AdventOfCode2024(13, 2)]
+    public static long RunPart2()
+    {
+        return ParseMany(File.ReadLines(InputPath))
+            .Select(m => m.FixInputs())
+            .GetTotalTokens();
+    }
+
+    public static long GetTotalTokens(string input)
     {
         return ParseMany(input.SplitLines(removeEmpty: false)).GetTotalTokens();
     }
 
-    public static bool IsWinnable(string input, out int? minCost)
+    public static long GetTotalTokensWithFixedInput(string input)
+    {
+        return ParseMany(input.SplitLines(removeEmpty: false))
+            .Select(m => m.FixInputs())
+            .GetTotalTokens();
+    }
+
+    public static bool IsWinnable(string input, out long? minCost)
     {
         return Parse(input.SplitLines()).IsWinnable(out minCost);
     }
 
-    private static int GetTotalTokens(this IEnumerable<Machine> machines)
+    public static bool IsWinnableWithFixedInput(string input, out long? minCost)
     {
-        return machines.Sum(m => m.IsWinnable(out var x) ? (int)x! : 0);
+        return Parse(input.SplitLines()).FixInputs().IsWinnable(out minCost);
     }
 
-    private static bool IsWinnable(this Machine m, out int? minCost)
+    private static long GetTotalTokens(this IEnumerable<Machine> machines)
+    {
+        return machines.Sum(m => m.IsWinnable(out var x) ? (long)x! : 0);
+    }
+
+    private static bool IsWinnable(this Machine m, out long? minCost)
     {
         minCost = null;
 
-        for (int a = 0; a <= 100; a++)
+        var num = (m.B.X * m.Prize.Y) - (m.B.Y * m.Prize.X);
+        var denom = (m.B.X * m.A.Y) - (m.B.Y * m.A.X);
+        if (denom == 0)
         {
-            var num = (m.Prize.X - (m.A.X * a));
-            var denom = m.B.X;
-            if (num >= 0 && (num % denom == 0))
-            {
-                var b = num / denom;
-                if ((m.A.Y * a) + (m.B.Y * b) == m.Prize.Y)
-                {
-                    minCost = (3 * a) + b;
-                    return true;
-                }
-            }
+            throw new InvalidOperationException("Got multiple solutions!");
+        }
+        if (num % denom != 0)
+        {
+            return false;
+        }
+        var a = num / denom;
+        if (a < 0)
+        {
+            return false;
         }
 
-        return false;
+        var bNum = m.Prize.X - (m.A.X * a);
+        if (bNum % m.B.X != 0)
+        {
+            return false;
+        }
+        var b = bNum / m.B.X;
+        if (b < 0)
+        {
+            return false;
+        }
+
+        minCost = (3 * a) + b;
+        return true;
     }
 
     private static IEnumerable<Machine> ParseMany(IEnumerable<string> lines)
@@ -73,12 +106,17 @@ public static partial class Day13
         var bMatch = ButtonRegex().Match(linesList[1]);
         var prizeMatch = PrizeRegex().Match(linesList[2]);
 
-        Point a = new(Int32.Parse(aMatch.Groups[1].Value), Int32.Parse(aMatch.Groups[2].Value));
-        Point b = new(Int32.Parse(bMatch.Groups[1].Value), Int32.Parse(bMatch.Groups[2].Value));
-        Point prize = new(Int32.Parse(prizeMatch.Groups[1].Value), Int32.Parse(prizeMatch.Groups[2].Value));
+        MachinePoint a = new(Int64.Parse(aMatch.Groups[1].Value), Int64.Parse(aMatch.Groups[2].Value));
+        MachinePoint b = new(Int64.Parse(bMatch.Groups[1].Value), Int64.Parse(bMatch.Groups[2].Value));
+        MachinePoint prize = new(Int64.Parse(prizeMatch.Groups[1].Value), Int64.Parse(prizeMatch.Groups[2].Value));
 
         return new(prize, a, b);
     }
+
+    private static Machine FixInputs(this Machine m) =>
+        m with { Prize = new(m.Prize.X + 10000000000000, m.Prize.Y + 10000000000000) };
 }
 
-internal record Machine(Point Prize, Point A, Point B);
+internal record Machine(MachinePoint Prize, MachinePoint A, MachinePoint B);
+
+internal record MachinePoint(long X, long Y);
