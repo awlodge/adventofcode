@@ -16,8 +16,7 @@ public static class Day06
         return grid.CountGuardWalk();
     }
 
-    // Skipping for now as it is taking too long and giving the wrong answer.
-    //[AdventOfCode2024(6, 2)]
+    [AdventOfCode2024(6, 2)]
     public static long RunPart2()
     {
         var grid = ParseHelpers.ParseCharGridFile(InputPath);
@@ -39,9 +38,13 @@ public static class Day06
     private static int CountGuardWalk(this Grid<char> map) => map
         .CountGuardWalk(new PosDef(map.FindGuard(), Directions.North));
 
-    private static Point FindGuard(this Grid<char> map) => map
-        .Search()
-        .First(p => map.Lookup(p) == Guard);
+    private static Point FindGuard(this Grid<char> map)
+    {
+        var guard = map
+            .Search()
+            .First(p => map.Lookup(p) == Guard);
+        return guard;
+    }
 
     private static int CountGuardWalk(this Grid<char> map, PosDef guard)
     {
@@ -57,36 +60,46 @@ public static class Day06
 
     private static int CheckAddingObstacles(this Grid<char> map, PosDef guard)
     {
-        return map
+        int count = 0;
+        Parallel.Invoke(map
             .GuardWalk(guard)
+            .Skip(1)
             .Select(p => p.Position)
             .Distinct()
-            .Where(p => map.GuardWalk(guard, extras: [p]).CheckLoop())
-            .Count();
+            .Select<Point, Action>(p => (() =>
+            {
+                if (map.GuardWalk(guard, extraObstacle: p).CheckLoop())
+                {
+                    Interlocked.Increment(ref count);
+                }
+            }))
+            .ToArray());
+
+        return count;
     }
 
-    private static IEnumerable<PosDef> GuardWalk(this Grid<char> map, PosDef guardPosition, IList<Point>? extras = default)
+    private static IEnumerable<PosDef> GuardWalk(this Grid<char> map, PosDef guardPosition, Point? extraObstacle = default)
     {
-        var direction = guardPosition.Direction;
-        var position = guardPosition.Position;
+        var direction = guardPosition.Direction with { };
+        var position = guardPosition.Position with { };
 
         yield return guardPosition;
 
-        while (map.TryLookup(position + direction, out char x))
+        while (true)
         {
-            if (x == Obstacle || (extras?.Contains(position + direction) ?? false))
+            var candidate = position + direction;
+            if ((map.TryLookup(candidate, out var x) && x == Obstacle) || (extraObstacle == candidate))
             {
                 direction = direction.Rotate();
+                continue;
             }
-            position += direction;
-            if (map.Contains(position))
-            {
-                yield return new PosDef(position, direction);
-            }
-            else
+            position = candidate;
+            if (!map.Contains(position))
             {
                 break;
             }
+
+            yield return new PosDef(position, direction);
         }
     }
 
