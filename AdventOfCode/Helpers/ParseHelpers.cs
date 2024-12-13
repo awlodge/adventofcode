@@ -9,6 +9,28 @@ internal static class ParseHelpers
                 StringSplitOptions.TrimEntries)
         .Select(l => l.TrimEnd('\r', '\n'));
 
+    public static IEnumerable<List<string>> SplitBlocks(this IEnumerable<string> lines)
+    {
+        List<string> block = [];
+        foreach (var line in lines)
+        {
+            if (line == string.Empty)
+            {
+                yield return block;
+                block = [];
+            }
+            else
+            {
+                block.Add(line);
+            }
+        }
+
+        if (block.Count != 0)
+        {
+            yield return block;
+        }
+    }
+
     public static IEnumerable<int> ParseAsInts(this string input, char[]? splitChars = default) => input
         .Split(splitChars ?? [], options: StringSplitOptions.RemoveEmptyEntries)
         .Select(x => Int32.Parse(x));
