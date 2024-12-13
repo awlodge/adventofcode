@@ -31,9 +31,9 @@ public static class Day11
             return 1;
         }
 
-        if (CountCache.ContainsKey(stone) && CountCache[stone].ContainsKey(changeCount))
+        if (CountCache.TryGetValue(stone, out var stoneCache) && stoneCache.TryGetValue(changeCount, out var value))
         {
-            return CountCache[stone][changeCount];
+            return value;
         }
 
         var result = stone

@@ -13,14 +13,25 @@ public static class Day12
         return ParseHelpers.ParseCharGridFile(InputPath).GetTotalCost();
     }
 
+    [AdventOfCode2024(12, 2)]
+    public static long RunPart2()
+    {
+        return ParseHelpers.ParseCharGridFile(InputPath).GetTotalCost(withDiscount: true);
+    }
+
     public static int GetTotalCost(string input)
     {
         return ParseHelpers.ParseCharGrid(input).GetTotalCost();
     }
 
-    private static int GetTotalCost(this Map map)
+    public static int GetDiscountedCost(string input)
     {
-        return map.GetAllRegions().Sum(r => map.GetRegionCost(r));
+        return ParseHelpers.ParseCharGrid(input).GetTotalCost(withDiscount: true);
+    }
+
+    private static int GetTotalCost(this Map map, bool withDiscount = false)
+    {
+        return map.GetAllRegions().Sum(r => r.GetCost(withDiscount));
     }
 
     private static IEnumerable<HashSet<Point>> GetAllRegions(this Map map)
@@ -62,17 +73,64 @@ public static class Day12
         return region;
     }
 
-    private static int GetRegionCost(this Map map, IEnumerable<Point> region)
+    private static int GetCost(this IEnumerable<Point> region, bool withDiscount = false)
     {
-        return region.Count() * region.Sum(p => map.GetPointPerimeter(p));
+        return region.Count() * (withDiscount ? region.CountSides() : region.GetPerimeter());
     }
 
-    private static int GetPointPerimeter(this Map map, Point p)
+    private static int GetPerimeter(this IEnumerable<Point> region)
     {
-        var x = map.Lookup(p);
-        return Directions.Cardinal.Count(d =>
-        {
-            return !(map.TryLookup(p + d, out var y) && y == x);
-        });
+        return region.Sum(p => region.GetPointPerimeter(p));
     }
+
+    private static int GetPointPerimeter(this IEnumerable<Point> region, Point p)
+    {
+        return Directions.Cardinal.Count(d => region.HasSideAtPoint(p, d));
+    }
+
+    private static int CountSides(this IEnumerable<Point> region)
+    {
+        int count = 0;
+        HashSet<Point> visited = [];
+
+        foreach (var p in region)
+        {
+            CountSidesAtPoint(p);
+        }
+
+        return count;
+
+        void CountSidesAtPoint(Point p)
+        {
+            foreach (var d in Directions.Cardinal.Where(x => region.HasSideAtPoint(p, x)))
+            {
+                Point neighbor = (d == Directions.North ||
+                        d == Directions.South) ?
+                    p + Directions.West : p + Directions.North;
+
+                if (region.Contains(neighbor) && region.HasSideAtPoint(neighbor, d))
+                {
+                    if (!visited.Contains(neighbor))
+                    {
+                        CountSidesAtPoint(neighbor);
+                    }
+                    if (visited.Contains(p))
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    if (!visited.Contains(p))
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            visited.Add(p);
+        }
+    }
+
+    private static bool HasSideAtPoint(this IEnumerable<Point> region, Point p, Point dir) => !region.Contains(p + dir);
 }
