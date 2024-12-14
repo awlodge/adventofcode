@@ -61,19 +61,18 @@ public static class Day06
     private static int CheckAddingObstacles(this Grid<char> map, PosDef guard)
     {
         int count = 0;
-        Parallel.Invoke(map
-            .GuardWalk(guard)
+        map.GuardWalk(guard)
             .Skip(1)
             .Select(p => p.Position)
             .Distinct()
-            .Select<Point, Action>(p => (() =>
+            .AsParallel()
+            .ForAll(p =>
             {
                 if (map.GuardWalk(guard, extraObstacle: p).CheckLoop())
                 {
                     Interlocked.Increment(ref count);
                 }
-            }))
-            .ToArray());
+            });
 
         return count;
     }
