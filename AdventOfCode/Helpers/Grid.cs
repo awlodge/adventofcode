@@ -5,10 +5,12 @@ internal class Grid<T>(List<List<T>> data)
     private readonly List<List<T>> _data = data;
 
     public int ColCount => _data[0].Count;
+    public int Width => ColCount;
 
     public int RowCount => _data.Count;
+    public int Height => RowCount;
 
-    public T Lookup(Point p) => _data[p.X][p.Y];
+    public T Lookup(Point p) => _data[p.Y][p.X];
 
     public bool TryLookup(Point p, out T? x)
     {
@@ -22,15 +24,15 @@ internal class Grid<T>(List<List<T>> data)
         return true;
     }
 
-    public bool Contains(Point p) => p.X >= 0 && p.X < RowCount && p.Y >= 0 && p.Y < ColCount;
+    public bool Contains(Point p) => p.Y >= 0 && p.Y < RowCount && p.X >= 0 && p.X < ColCount;
 
     public IEnumerable<Point> Search()
     {
-        for (int i = 0; i < RowCount; i++)
+        for (int y = 0; y < RowCount; y++)
         {
-            for (int j = 0; j < _data[i].Count; j++)
+            for (int x = 0; x < _data[y].Count; x++)
             {
-                yield return new(i, j);
+                yield return new(x, y);
             }
         }
     }
@@ -52,21 +54,26 @@ internal class Grid<T>(List<List<T>> data)
 
     public void Print(IDictionary<Point, T>? substitutes = default)
     {
-        for (int i = 0; i < RowCount; i++)
+        for (int y = 0; y < RowCount; y++)
         {
             var rowStr = String.Empty;
-            for (int j = 0; j < RowCount; j++)
+            for (int x = 0; x < ColCount; x++)
             {
-                var p = new Point(i, j);
-                T x = Lookup(p);
-                if (substitutes?.TryGetValue(p, out var y) ?? false)
+                var p = new Point(x, y);
+                T val = Lookup(p);
+                if (substitutes?.TryGetValue(p, out var val2) ?? false)
                 {
-                    x = y;
+                    val = val2;
                 }
-                rowStr += x;
+                rowStr += val;
             }
             Console.WriteLine(rowStr);
         }
+    }
+
+    public static Grid<T> Generate(T input, int width, int height)
+    {
+        return new Grid<T>(Enumerable.Repeat(Enumerable.Repeat(input, width).ToList(), height).ToList());
     }
 }
 
@@ -88,13 +95,13 @@ internal record Point(int X, int Y)
 
 internal static class Directions
 {
-    public static readonly Point North = new(-1, 0);
-    public static readonly Point NorthEast = new(-1, 1);
-    public static readonly Point East = new(0, 1);
+    public static readonly Point North = new(0, -1);
+    public static readonly Point NorthEast = new(1, -1);
+    public static readonly Point East = new(1, 0);
     public static readonly Point SouthEast = new(1, 1);
-    public static readonly Point South = new(1, 0);
-    public static readonly Point SouthWest = new(1, -1);
-    public static readonly Point West = new(0, -1);
+    public static readonly Point South = new(0, 1);
+    public static readonly Point SouthWest = new(-1, 1);
+    public static readonly Point West = new(-1, 0);
     public static readonly Point NorthWest = new(-1, -1);
 
     public static readonly Point[] All = [

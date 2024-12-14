@@ -104,10 +104,10 @@ public static class Day06
 
     private static Point Rotate(this Point point) => point switch
     {
-        Point(-1, 0) => Directions.East,
-        Point(0, 1) => Directions.South,
-        Point(1, 0) => Directions.West,
-        Point(0, -1) => Directions.North,
+        Point(0, -1) => Directions.East,
+        Point(1, 0) => Directions.South,
+        Point(0, 1) => Directions.West,
+        Point(-1, 0) => Directions.North,
         _ => throw new InvalidOperationException("Can only rotate cardinal directions")
     };
 
