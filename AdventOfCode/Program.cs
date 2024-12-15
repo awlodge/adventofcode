@@ -2,4 +2,4 @@
 
 RunnerHelpers
     .GetAllRunners()
-.RunAll();
+    .RunAll();

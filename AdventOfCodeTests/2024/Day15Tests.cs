@@ -45,4 +45,12 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^";
     {
         Day15.GetGpsSum(input).Should().Be(expectedResult);
     }
+
+    [Theory]
+    [InlineData(TestInput1, 1751)]
+    [InlineData(TestInput2, 9021)]
+    public void TestGetGpsSumExpandedInput(string input, int expectedResult)
+    {
+        Day15.GetGpsSumExpandedInput(input).Should().Be(expectedResult);
+    }
 }
