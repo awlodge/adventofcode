@@ -39,14 +39,15 @@ internal static class ParseHelpers
         .Split(splitChars ?? [], options: StringSplitOptions.RemoveEmptyEntries)
         .Select(x => Int64.Parse(x));
 
-    public static Grid<char> ParseCharGrid(string input)
-    {
-        return new Grid<char>(input.SplitLines().Select(l => l.ToCharArray().ToList()).ToList());
-    }
+    public static Grid<char> ParseCharGrid(string input) =>
+        input.SplitLines().ParseCharGrid();
 
-    public static Grid<char> ParseCharGridFile(string path)
+    public static Grid<char> ParseCharGridFile(string path) =>
+        File.ReadLines(path).ParseCharGrid();
+
+    public static Grid<char> ParseCharGrid(this IEnumerable<string> lines)
     {
-        return new Grid<char>(File.ReadLines(path).Select(l => l.ToCharArray().ToList()).ToList());
+        return new Grid<char>(lines.Select(l => l.ToCharArray().ToList()).ToList());
     }
 
     public static Grid<int> ParseIntGrid(string input)

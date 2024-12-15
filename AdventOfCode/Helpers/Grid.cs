@@ -52,6 +52,31 @@ internal class Grid<T>(List<List<T>> data)
         }
     }
 
+    public bool TryUpdate(Point p, T val)
+    {
+        if (Contains(p))
+        {
+            _data[p.Y][p.X] = val;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool Swap(Point p, Point q)
+    {
+        if (!(Contains(p) && Contains(q)))
+        {
+            return false;
+        }
+
+        var pVal = Lookup(p);
+        var qVal = Lookup(q);
+        TryUpdate(p, qVal);
+        TryUpdate(q, pVal);
+        return true;
+    }
+
     public void Print(IDictionary<Point, T>? substitutes = default)
     {
         for (int y = 0; y < RowCount; y++)
