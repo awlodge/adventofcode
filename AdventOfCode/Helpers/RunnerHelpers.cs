@@ -29,6 +29,17 @@ internal static class RunnerHelpers
             .OrderBy(x => x.Second);
     }
 
+    public static IEnumerable<(MethodInfo, AdventOfCodeAttribute?)> Filter(this IEnumerable<(MethodInfo, AdventOfCodeAttribute?)> runners, int year, int? day = default, int? part = default)
+    {
+        return runners.Where(x =>
+        {
+            AdventOfCodeAttribute a = x.Item2!;
+            return (a.Year == year)
+                && (day == null || (a.Day == day))
+                && (part == null || (a.Part == part));
+        });
+    }
+
     public static void RunAll(this IEnumerable<(MethodInfo, AdventOfCodeAttribute?)> runners)
     {
         foreach (var x in runners)
