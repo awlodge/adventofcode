@@ -5,12 +5,12 @@ namespace AdventOfCode.Helpers;
 
 internal static class RunnerHelpers
 {
-    public static void Execute<T>(Func<T> action, string title)
+    public static void Execute(MethodInfo method, string title)
     {
         Console.WriteLine("============================");
         Console.WriteLine($"Executing {title}");
         var sw = Stopwatch.StartNew();
-        T output = action();
+        var output = method.Invoke(null, null);
         sw.Stop();
         Console.WriteLine($"Output: {output}");
         Console.WriteLine($"[Ran in {sw.Elapsed.TotalSeconds} seconds]");
@@ -46,8 +46,7 @@ internal static class RunnerHelpers
         {
             var m = x.Item1;
             var a = x.Item2 ?? throw new ArgumentNullException(nameof(runners), $"{m.DeclaringType}.{m.Name} missing attributes");
-            Execute((Func<long>)Delegate.CreateDelegate(typeof(Func<long>), m),
-                $"{a.Year} Day {a.Day} (part {a.Part})");
+            Execute(m, $"{a.Year} Day {a.Day} (part {a.Part})");
         }
     }
 }
