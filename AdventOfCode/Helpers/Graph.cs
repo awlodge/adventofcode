@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode.Helpers;
 
-internal class Graph<T> where T : class
+internal class Graph<T> where T : IEquatable<T>
 {
     public Dictionary<T, Node<T>> Nodes { get; private set; } = [];
 
@@ -31,7 +31,7 @@ internal class Graph<T> where T : class
 
     public bool Contains(T v) => Nodes.ContainsKey(v);
 
-    public int ShortestPath(T start, T end) => ShortestPath(n => n == start, n => n == end);
+    public int ShortestPath(T start, T end) => ShortestPath(n => n.Equals(start), n => n.Equals(end));
 
     public int ShortestPath(Func<T, bool> isStart, Func<T, bool> isEnd)
     {
@@ -39,11 +39,13 @@ internal class Graph<T> where T : class
 
         while (unvisited.Count > 0)
         {
-            var node = unvisited
-                .Where(x => x.Value != -1)
-                .MinBy(x => x.Value)
-                .Key ?? throw new InvalidOperationException("No nodes left");
+            var candidates = unvisited.Where(x => x.Value != -1);
+            if (!candidates.Any())
+            {
+                break;
+            }
 
+            T node = candidates.MinBy(x => x.Value).Key;
             if (isEnd(node))
             {
                 return unvisited[node];
@@ -51,10 +53,10 @@ internal class Graph<T> where T : class
 
             foreach (var edge in Nodes[node].Edges)
             {
-                if (unvisited.ContainsKey(edge.Neighbor.Value))
+                if (unvisited.TryGetValue(edge.Neighbor.Value, out int neighborValue))
                 {
                     var newScore = unvisited[node] + edge.Cost;
-                    if (unvisited[edge.Neighbor.Value] == -1 || newScore < unvisited[edge.Neighbor.Value])
+                    if (neighborValue == -1 || newScore < neighborValue)
                     {
                         unvisited[edge.Neighbor.Value] = newScore;
                     }

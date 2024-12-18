@@ -36,11 +36,6 @@ public static class Day16
             graph.AddNode(node, GetNeighbors(node));
         }
 
-        var start = new DirectedPoint(map.Search(x => x == 'S').First(), Directions.East);
-        if (!allNodes.Contains(start))
-        {
-            throw new InvalidOperationException($"Can't find {start}");
-        }
         return graph.ShortestPath(n => map.Lookup(n.Position) == 'S' && n.Direction == Directions.East,
             n => map.Lookup(n.Position) == 'E');
 
@@ -84,15 +79,4 @@ public static class Day16
     }
 }
 
-internal sealed record DirectedPoint(Point Position, Point Direction)
-{
-    public bool Equals(DirectedPoint? other)
-    {
-        return (other != null && other.Position == Position && other.Direction == Direction);
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Position.GetHashCode(), Direction.GetHashCode());
-    }
-}
+internal record struct DirectedPoint(Point Position, Point Direction);

@@ -102,7 +102,7 @@ internal class Grid<T>(List<List<T>> data)
     }
 }
 
-internal record Point(int X, int Y)
+internal record struct Point(int X, int Y)
 {
     public static Point operator +(Point a) => a;
     public static Point operator -(Point a) => new(-a.X, -a.Y);

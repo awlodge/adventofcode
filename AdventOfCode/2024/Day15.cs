@@ -63,7 +63,7 @@ public static class Day15
         while (true)
         {
             var key = Console.ReadKey();
-            Point? dir;
+            Point dir;
             try
             {
                 dir = GetDirection(key.KeyChar);
@@ -74,7 +74,7 @@ public static class Day15
                 continue;
             }
             Console.WriteLine($"Moving robot: {key.KeyChar}");
-            robot = map.MoveRobot(robot, dir!);
+            robot = map.MoveRobot(robot, dir);
             map.Print();
         }
     }
@@ -227,7 +227,7 @@ public static class Day15
                 .ToList())
             .ToList());
 
-        char[] ExpandChar(char x) => x switch
+        static char[] ExpandChar(char x) => x switch
         {
             '#' => ['#', '#'],
             'O' => ['[', ']'],
