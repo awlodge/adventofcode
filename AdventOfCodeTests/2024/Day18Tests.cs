@@ -37,4 +37,23 @@ public class Day18Tests
     {
         Day18.GetShortestPath(input, width, height, ticks).Should().Be(expectedResult);
     }
+
+    [Theory]
+    [InlineData(TestInput, 7, 7, "6,1")]
+    public void TestFindFirstBlocker(string input, int width, int height, string expectedResult)
+    {
+        Day18.FindFirstBlocker(input, width, height).Should().Be(expectedResult);
+    }
+
+    [Fact]
+    public void TestPart1()
+    {
+        Day18.RunPart1().Should().Be(296);
+    }
+
+    [Fact]
+    public void TestPart2()
+    {
+        Day18.RunPart2().Should().Be("28,44");
+    }
 }

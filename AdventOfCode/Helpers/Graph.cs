@@ -66,7 +66,7 @@ internal class Graph<T> where T : IEquatable<T>
             unvisited.Remove(node);
         }
 
-        throw new InvalidOperationException($"No path from start to end");
+        return -1;
     }
 }
 
