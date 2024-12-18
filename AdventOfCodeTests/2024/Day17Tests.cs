@@ -11,6 +11,12 @@ Register C: 0
 
 Program: 0,1,5,4,3,0";
 
+    private const string TestInput2 = @"Register A: 2024
+Register B: 0
+Register C: 0
+
+Program: 0,3,5,4,3,0";
+
     [Theory]
     [InlineData(new[] { 2, 6 }, 0, 0, 9, 0, 1, 9, new int[] { })]
     [InlineData(new[] { 5, 0, 5, 1, 5, 4 }, 10, 0, 0, 10, 0, 0, new int[] { 0, 1, 2 })]
@@ -38,5 +44,11 @@ Program: 0,1,5,4,3,0";
     public void TestPart1()
     {
         Day17.RunPart1().Should().Be("1,3,7,4,6,4,2,3,5");
+    }
+
+    [Fact]
+    public void TestFindSelfRef()
+    {
+        Day17.FindSelfRef(TestInput2).Should().Be(117440);
     }
 }

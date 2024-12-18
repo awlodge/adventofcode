@@ -40,6 +40,28 @@ public static partial class Day17
         return computer.Outputs;
     }
 
+    public static int FindSelfRef(string input)
+    {
+        var computer = Parse(input);
+        int a = 0;
+        for (int i = computer.Operations.Count - 1; i >= 0; i--)
+        {
+            var op = computer.Operations[i];
+            a = (8 * a) + op;
+        }
+
+        a = a * 8;
+        computer.A = a;
+        computer.Execute();
+        var expOutput = String.Join(',', computer.Operations);
+        if (computer.PrintOutput() != expOutput)
+        {
+            throw new InvalidOperationException($"A={a}: Expected {expOutput}, got {computer.PrintOutput()}");
+        }
+
+        return a;
+    }
+
     private static Computer Parse(string input) =>
         input.SplitLines().ParseInner();
 
@@ -70,34 +92,35 @@ public static partial class Day17
 
 internal class Computer
 {
-    private readonly List<int> _operations;
     private int _instructionPtr;
     private bool _moveNext;
 
     public Computer(List<int> operations, int a = 0, int b = 0, int c = 0)
     {
-        _operations = operations;
+        Operations = operations;
         A = a;
         B = b;
         C = c;
         Outputs = [];
     }
 
-    public int A { get; private set; }
+    public int A { get; set; }
 
-    public int B { get; private set; }
+    public int B { get; set; }
 
-    public int C { get; private set; }
+    public int C { get; set; }
+
+    public List<int> Operations { get; private init; }
 
     public List<int> Outputs { get; private set; }
 
     public void Execute()
     {
-        while (_instructionPtr < _operations.Count - 1)
+        while (_instructionPtr < Operations.Count - 1)
         {
             _moveNext = true;
-            var opCode = _operations[_instructionPtr];
-            var operand = _operations[_instructionPtr + 1];
+            var opCode = Operations[_instructionPtr];
+            var operand = Operations[_instructionPtr + 1];
             ExecuteOp(opCode, operand);
 
             if (_moveNext)
