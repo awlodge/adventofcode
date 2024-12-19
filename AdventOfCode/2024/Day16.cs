@@ -18,6 +18,11 @@ public static class Day16
         return ParseHelpers.ParseCharGrid(input).GetLowestScore();
     }
 
+    public static int CountVisited(string input)
+    {
+        return ParseHelpers.ParseCharGrid(input).GetVisited().Count();
+    }
+
     private static IEnumerable<DirectedPoint> GetAllNodes(this Map map)
     {
         return map.Search()
@@ -29,6 +34,26 @@ public static class Day16
 
     private static int GetLowestScore(this Map map)
     {
+        return map.ToGraph().ShortestPath(n => map.Lookup(n.Position) == 'S' && n.Direction == Directions.East,
+            n => map.Lookup(n.Position) == 'E');
+    }
+
+    private static IEnumerable<Point> GetVisited(this Map map)
+    {
+        var forwardPaths = map.ToGraph()
+            .ShortestPaths(n => map.Lookup(n.Position) == 'S' && n.Direction == Directions.East,
+                n => map.Lookup(n.Position) == 'E');
+        var reversePaths = map.ToGraph()
+            .ShortestPaths(n => map.Lookup(n.Position) == 'E',
+                n => map.Lookup(n.Position) == 'S' && n.Direction == Directions.East);
+        var pathLength = forwardPaths.First(x => map.Lookup(x.Key.Position) == 'E').Value;
+        return forwardPaths
+            .Where(x => reversePaths.TryGetValue(x.Key, out var y) && x.Value + y == pathLength)
+            .Select(x => x.Key.Position);
+    }
+
+    private static Graph<DirectedPoint> ToGraph(this Map map)
+    {
         var graph = new Graph<DirectedPoint>();
         var allNodes = map.GetAllNodes().ToHashSet();
         foreach (var node in allNodes)
@@ -36,8 +61,7 @@ public static class Day16
             graph.AddNode(node, GetNeighbors(node));
         }
 
-        return graph.ShortestPath(n => map.Lookup(n.Position) == 'S' && n.Direction == Directions.East,
-            n => map.Lookup(n.Position) == 'E');
+        return graph;
 
         IEnumerable<(DirectedPoint, int)> GetNeighbors(DirectedPoint n)
         {

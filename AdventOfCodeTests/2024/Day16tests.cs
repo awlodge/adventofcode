@@ -46,4 +46,12 @@ public class Day16Tests
     {
         Day16.GetLowestScore(input).Should().Be(expectedResult);
     }
+
+    [Theory]
+    [InlineData(TestInput1, 45)]
+    [InlineData(TestInput2, 64)]
+    public void TestCountVisited(string input, int expectedResult)
+    {
+        Day16.CountVisited(input).Should().Be(expectedResult);
+    }
 }

@@ -35,7 +35,13 @@ internal class Graph<T> where T : IEquatable<T>
 
     public int ShortestPath(Func<T, bool> isStart, Func<T, bool> isEnd)
     {
+        return ShortestPaths(isStart, isEnd).First(x => isEnd(x.Key)).Value;
+    }
+
+    public Dictionary<T, int> ShortestPaths(Func<T, bool> isStart, Func<T, bool> isEnd)
+    {
         var unvisited = Nodes.Keys.ToDictionary(n => n, n => isStart(n) ? 0 : -1);
+        Dictionary<T, int> visited = [];
 
         while (unvisited.Count > 0)
         {
@@ -48,7 +54,8 @@ internal class Graph<T> where T : IEquatable<T>
             T node = candidates.MinBy(x => x.Value).Key;
             if (isEnd(node))
             {
-                return unvisited[node];
+                visited[node] = unvisited[node];
+                return visited;
             }
 
             foreach (var edge in Nodes[node].Edges)
@@ -63,10 +70,11 @@ internal class Graph<T> where T : IEquatable<T>
                 }
             }
 
+            visited[node] = unvisited[node];
             unvisited.Remove(node);
         }
 
-        return -1;
+        return visited;
     }
 }
 
