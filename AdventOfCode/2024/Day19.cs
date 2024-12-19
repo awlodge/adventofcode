@@ -98,3 +98,47 @@ public class Day19
         return d.CountViablePatterns(targetPatterns);
     }
 }
+
+internal class InfiniteTrie
+{
+    private readonly InfiniteTrieNode _root;
+    public InfiniteTrie(IEnumerable<string> patterns)
+    {
+        _root = new();
+        foreach (var pattern in patterns)
+        {
+            Add(pattern);
+        }
+    }
+
+    public void Add(string pattern)
+    {
+        var node = _root;
+        foreach (var c in pattern)
+        {
+            node = node.Add(c);
+        }
+        node.SetFallback(_root);
+    }
+}
+
+internal class InfiniteTrieNode
+{
+    private readonly Dictionary<char, InfiniteTrieNode> _children = [];
+    private InfiniteTrieNode? _fallback;
+
+    public InfiniteTrieNode Add(char s)
+    {
+        if (!_children.TryGetValue(s, out var child))
+        {
+            child = new();
+            _children[s] = child;
+        }
+        return child;
+    }
+
+    public void SetFallback(InfiniteTrieNode fallback)
+    {
+        _fallback = fallback;
+    }
+}
