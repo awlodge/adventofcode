@@ -19,10 +19,10 @@ bbrgwb";
     public static IEnumerable<object[]> TestData()
     {
         bool[] expectedResults = [true, true, true, true, false, true, true, false];
-        (var startPatterns, var targetPatterns) = Day19.Parse(TestInput);
+        var (startPatterns, targetPatterns) = Day19.Parse(TestInput);
         for (var i = 0; i < targetPatterns.Count; i++)
         {
-            yield return new object[] { startPatterns, targetPatterns[i], expectedResults[i] };
+            yield return [startPatterns, targetPatterns[i], expectedResults[i]];
         }
     }
 

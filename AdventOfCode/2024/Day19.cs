@@ -6,9 +6,7 @@ public class Day19
 {
     private static readonly string InputPath = Path.Combine(Environment.CurrentDirectory, "2024/inputs/day19.txt");
 
-    private readonly HashSet<string> _possiblePatterns;
-    private readonly int _minLength;
-    private readonly int _maxLength;
+    private readonly InfiniteTrie _trie;
 
     [AdventOfCode2024(19, 1)]
     public static int RunPart1()
@@ -19,9 +17,7 @@ public class Day19
 
     public Day19(IEnumerable<string> patterns)
     {
-        _minLength = patterns.Select(s => s.Length).Min();
-        _maxLength = patterns.Select(s => s.Length).Max();
-        _possiblePatterns = new HashSet<string>(patterns);
+        _trie = new InfiniteTrie(patterns);
     }
 
     public int CountViablePatterns(IEnumerable<string> patterns)
@@ -29,44 +25,7 @@ public class Day19
         return patterns.Count(p => IsViablePattern(p));
     }
 
-    public bool IsViablePattern(string pattern)
-    {
-        if (pattern.Length == 0)
-        {
-            return true;
-        }
-
-        if (_possiblePatterns.Contains(pattern))
-        {
-            return true;
-        }
-
-        foreach (var l in PossibleSubPatternLengths(pattern))
-        {
-            var a = pattern[..l];
-            var b = pattern[l..];
-            if (_possiblePatterns.Contains(a) && IsViablePattern(b))
-            {
-                _possiblePatterns.Add(pattern);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private IEnumerable<int> PossibleSubPatternLengths(string pattern)
-    {
-        for (int i = _minLength; i < pattern.Length; i++)
-        {
-            if (i > _maxLength)
-            {
-                break;
-            }
-
-            yield return i;
-        }
-    }
+    public bool IsViablePattern(string pattern) => _trie.Search(pattern);
 
     public static (List<string>, List<string>) Parse(string input)
     {
@@ -88,7 +47,7 @@ public class Day19
 
     public static int CountViablePatterns(string input)
     {
-        (var startPatterns, var targetPatterns) = Parse(input);
+        var (startPatterns, targetPatterns) = Parse(input);
         return CountViablePatterns(startPatterns, targetPatterns);
     }
 
@@ -102,6 +61,12 @@ public class Day19
 internal class InfiniteTrie
 {
     private readonly InfiniteTrieNode _root;
+
+    public InfiniteTrie()
+    {
+        _root = new();
+    }
+    
     public InfiniteTrie(IEnumerable<string> patterns)
     {
         _root = new();
@@ -119,6 +84,20 @@ internal class InfiniteTrie
             node = node.Add(c);
         }
         node.SetFallback(_root);
+    }
+
+    public bool Search(string pattern)
+    {
+        var node = _root;
+        foreach (var c in pattern)
+        {
+            if (!node!.Search(c, out node))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 
@@ -140,5 +119,42 @@ internal class InfiniteTrieNode
     public void SetFallback(InfiniteTrieNode fallback)
     {
         _fallback = fallback;
+    }
+
+    public virtual bool Search(char c, out InfiniteTrieNode? next)
+    {
+        next = null;
+        return _fallback != null ? Combine(_fallback).Search(c, out next) : _children.TryGetValue(c, out next);
+    }
+
+    private CombinedInfiniteTrieNode Combine(InfiniteTrieNode other) => new(this, other);
+}
+
+internal class CombinedInfiniteTrieNode(InfiniteTrieNode a, InfiniteTrieNode b) : InfiniteTrieNode
+{
+    public override bool Search(char c, out InfiniteTrieNode? next)
+    {
+        var searchA = a.Search(c, out var nextA);
+        var searchB = b.Search(c, out var nextB);
+
+        if (searchA && searchB)
+        {
+            return (new CombinedInfiniteTrieNode(nextA!, nextB!)).Search(c, out next);
+        }
+        
+        if (searchA)
+        {
+            next = nextA;
+            return true;
+        }
+
+        if (searchB)
+        {
+            next = nextB;
+            return true;
+        }
+
+        next = null;
+        return false;
     }
 }
